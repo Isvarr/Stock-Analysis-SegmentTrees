@@ -56,10 +56,15 @@ class SegmentTree{
                querySum(2 * node + 1, mid + 1, end, l, r);
     }
 
+  public double rangeAverage(int l, int r) {
+        int sum = rangeSum(l, r);
+        return (double) sum / (r - l + 1);
+    }
 
   
 
 
   
 }
+
 
