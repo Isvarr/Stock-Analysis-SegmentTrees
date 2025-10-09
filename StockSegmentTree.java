@@ -55,16 +55,37 @@ class SegmentTree{
         return querySum(2 * node, start, mid, l, r) +
                querySum(2 * node + 1, mid + 1, end, l, r);
     }
-
+------------------------------------------------------------
+    // Function: rangeAverage
+    // Purpose: Finds average of elements in range [l, r].
+    // Logic: Uses rangeSum() and divides by number of elements.
+    // Time Complexity: O(log n)
+    // Justification: Depends on one O(log n) range sum query.
+    // ------------------------------------------------------------
   public double rangeAverage(int l, int r) {
         int sum = rangeSum(l, r);
         return (double) sum / (r - l + 1);
     }
+-----------------------------------------------------------
+    // Function: rangeMin
+    // Purpose: Returns minimum value in range [l, r].
+    // Logic: Linear scan between indices l and r.
+    // Time Complexity: O(n)
+    // Justification: In worst case, traverses all elements in range.
+    // ------------------------------------------------------------
+    public int rangeMin(int l, int r) {
+        int min = Integer.MAX_VALUE;
+        for (int i = l; i <= r; i++)
+            min = Math.min(min, arr[i]);
+        return min;
+    }
+
 
   
 
 
   
 }
+
 
 
