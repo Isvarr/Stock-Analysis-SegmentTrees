@@ -66,4 +66,46 @@ public class SegmentTreeApp extends Application {
         }
         System.out.println("Exiting...");
     }
+    // ------------------------------------------------------------
+    // MENU HANDLERS
+    // ------------------------------------------------------------
+
+    //HELPER FUNCTION FOR RANGE AVERAGE
+    private static void handleRangeAverage() {
+        System.out.print("Enter range (l r): ");
+        int l = sc.nextInt();
+        int r = sc.nextInt();
+        System.out.printf("Range Average = %.2f%n", tree.rangeAverage(l, r));
+    }
+
+    //HELPER FUNCTION FOR RANGE MIN/MAX
+    private static void handleMinMax() {
+        System.out.print("Enter range (l r): ");
+        int l = sc.nextInt();
+        int r = sc.nextInt();
+        System.out.println("Range Min = " + tree.rangeMin(l, r));
+        System.out.println("Range Max = " + tree.rangeMax(l, r));
+    }
+
+    //HELPER FUNCTION FOR STANDARD DEVIATION
+    private static void handleStdDev() {
+        System.out.print("Enter range (l r): ");
+        int l = sc.nextInt();
+        int r = sc.nextInt();
+        System.out.printf("Std Deviation = %.2f%n", tree.priceStandardDeviation(l, r));
+    }
+
+    //HELPER FUNCTION FOR SMA
+    private static void handleSMA() {
+        System.out.print("Enter window size: ");
+        int w = sc.nextInt();
+        tree.simpleMovingAverage(w);
+    }
+
+    // HELPER FUNCTION FOR EMA
+    private static void handleEMA() {
+        System.out.print("Enter window size: ");
+        int w = sc.nextInt();
+        tree.exponentialMovingAverage(w);
+    }
 
