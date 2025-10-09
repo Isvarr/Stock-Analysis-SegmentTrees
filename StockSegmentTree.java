@@ -196,6 +196,157 @@ public class SegmentTreeApp extends Application {
         stage.setScene(scene);
         stage.show();
     }
+    // ------------------------------------------------------------
+    // TREND STRENGTH FUNCTION
+    // ------------------------------------------------------------
+    private static void displayTrendStrength() {
+        int up = 0, down = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1]) up++;
+            else if (prices[i] < prices[i - 1]) down++;
+        }
+        double trendStrength = (double) (up - down) / (prices.length - 1);
+        System.out.printf("📈 Trend Strength = %.2f (positive = upward, negative = downward)%n", trendStrength);
+    }
+
+    // ------------------------------------------------------------
+    // VOLATILITY INDEX FUNCTION
+    // ------------------------------------------------------------
+    private static void displayVolatilityIndex() {
+        double std = tree.priceStandardDeviation(0, prices.length - 1);
+        int diff = tree.rangeDifference(0, prices.length - 1);
+        double volatilityIndex = std / diff;
+        System.out.printf("⚡ Volatility Index = %.2f%n", volatilityIndex);
+    }
+
+    // ------------------------------------------------------------
+    // PREDICT NEXT PRICE FUNCTION
+    // ------------------------------------------------------------
+    private static void predictNextPrice() {
+        double predicted = tree.predictNextPriceValue();
+        System.out.printf("🔮 Predicted Next Price = %.2f%n", predicted);
+    }
+}
+
+// ------------------------------------------------------------
+// SEGMENT TREE CLASS + ANALYTICAL FUNCTIONS
+// ------------------------------------------------------------
+class SegmentTree {
+    int[] arr, tree;
+    int n;
+
+    SegmentTree(int[] arr) {
+        this.arr = arr.clone();
+        n = arr.length;
+        tree = new int[4 * n];
+        build(1, 0, n - 1);
+    }
+
+    //BUILDS THE SEGMENT TREE FROM ARRAY
+    private void build(int node, int start, int end) {
+        if (start == end) tree[node] = arr[start];
+        else {
+            int mid = (start + end) / 2;
+            build(2 * node, start, mid);
+            build(2 * node + 1, mid + 1, end);
+            tree[node] = tree[2 * node] + tree[2 * node + 1];
+        }
+    }
+
+    //FINDS THE SUM IN THE RANGE
+    public int rangeSum(int l, int r) {
+        return querySum(1, 0, n - 1, l, r);
+    }
+
+    private int querySum(int node, int start, int end, int l, int r) {
+        if (r < start || end < l) return 0;
+        if (l <= start && end <= r) return tree[node];
+        int mid = (start + end) / 2;
+        return querySum(2 * node, start, mid, l, r)
+             + querySum(2 * node + 1, mid + 1, end, l, r);
+    }
+
+    //FUNCTION FOR RANGE AVERAGE 
+    public double rangeAverage(int l, int r) {
+        return (double) rangeSum(l, r) / (r - l + 1);
+    }
+
+    //FUNCTION FOR FINDING MINIMUM IN RANGE
+    public int rangeMin(int l, int r) {
+        int min = Integer.MAX_VALUE;
+        for (int i = l; i <= r; i++) min = Math.min(min, arr[i]);
+        return min;
+    }
+
+    //FUNCTION FOR FINDING MAXIMUM IN RANGE
+    public int rangeMax(int l, int r) {
+        int max = Integer.MIN_VALUE;
+        for (int i = l; i <= r; i++) max = Math.max(max, arr[i]);
+        return max;
+    }
+    //FUNCTION FOR RANGE DIFFERENCE
+    public int rangeDifference(int l, int r) {
+        return rangeMax(l, r) - rangeMin(l, r);
+    }
+
+    //FUNCTION TO FIND STANDARD DEVIATION
+    public double priceStandardDeviation(int l, int r) {
+        double mean = rangeAverage(l, r);
+        double variance = 0;
+        for (int i = l; i <= r; i++)
+            variance += Math.pow(arr[i] - mean, 2);
+        variance /= (r - l + 1);
+        return Math.sqrt(variance);
+    }
+
+    // --- SMA/EMA helpers ---
+    public double[] getSMA(int window) {
+        double[] sma = new double[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            int start = Math.max(0, i - window + 1);
+            double sum = 0;
+            for (int j = start; j <= i; j++) sum += arr[j];
+            sma[i] = sum / (i - start + 1);
+        }
+        return sma;
+    }
+
+    public double[] getEMA(int window) {
+        double[] ema = new double[arr.length];
+        double k = 2.0 / (window + 1);
+        ema[0] = arr[0];
+        for (int i = 1; i < arr.length; i++)
+            ema[i] = arr[i] * k + ema[i - 1] * (1 - k);
+        return ema;
+    }
+    
+    //FUNCTION TO CALCULATE SMA
+    public void simpleMovingAverage(int window) {
+        System.out.println("\nSMA:");
+        double[] sma = getSMA(window);
+        for (int i = 0; i < sma.length; i++)
+            System.out.printf("SMA[%d]: %.2f%n", i, sma[i]);
+    }
+
+    // FUNCTION TO CALCULATE EMA
+    public void exponentialMovingAverage(int window) {
+        System.out.println("\nEMA:");
+        double[] ema = getEMA(window);
+        for (int i = 0; i < ema.length; i++)
+            System.out.printf("EMA[%d]: %.2f%n", i, ema[i]);
+    }
+
+    // ------------------------------------------------------------
+    // FUTURE PRICE PREDICTION (simple linear extrapolation)
+    // ------------------------------------------------------------
+    public double predictNextPriceValue() {
+        if (arr.length < 2) return arr[arr.length - 1];
+        int last = arr.length - 1;
+        int diff = arr[last] - arr[last - 1]; // simple slope
+        return arr[last] + diff; // predicted next price
+    }
+}
+
 
 
 
