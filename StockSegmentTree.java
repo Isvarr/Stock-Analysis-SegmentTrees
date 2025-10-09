@@ -168,6 +168,36 @@ public class SegmentTreeApp extends Application {
         double[] ema = tree.getEMA(window);
         for (int i = 0; i < ema.length; i++)
             emaSeries.getData().add(new XYChart.Data<>(i, ema[i]));
+          // -----------------------
+        // Trend Strength Series (Upward movements)
+        // -----------------------
+        XYChart.Series<Number, Number> trendSeries = new XYChart.Series<>();
+        trendSeries.setName("Trend Strength (Up)");
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1])
+                trendSeries.getData().add(new XYChart.Data<>(i, prices[i]));
+        }
+
+        // -----------------------
+        // Future Price Prediction Series
+        // -----------------------
+        XYChart.Series<Number, Number> predictedSeries = new XYChart.Series<>();
+        predictedSeries.setName("Predicted Next Price");
+        double predicted = tree.predictNextPriceValue();
+        predictedSeries.getData().add(new XYChart.Data<>(prices.length, predicted));
+
+        // -----------------------
+        // Add all series to chart
+        // -----------------------
+        chart.getData().addAll(priceSeries, smaSeries, emaSeries, trendSeries, predictedSeries);
+
+        VBox root = new VBox(chart);
+        Scene scene = new Scene(root, 900, 550);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
 
 
 
