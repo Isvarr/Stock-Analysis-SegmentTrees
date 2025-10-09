@@ -197,6 +197,18 @@ public class SegmentTreeApp extends Application {
         stage.show();
     }
     // ------------------------------------------------------------
+    // SIMULATE PROFIT FUNCTION
+    // ------------------------------------------------------------
+    private static void simulateProfit() {
+        System.out.print("Enter range (l r): ");
+        int l = sc.nextInt();
+        int r = sc.nextInt();
+        int minPrice = tree.rangeMin(l, r);
+        int maxPrice = tree.rangeMax(l, r);
+        int profit = maxPrice - minPrice;
+        System.out.printf("💵 Simulated Profit (buy at min %d, sell at max %d) = %d%n", minPrice, maxPrice, profit);
+    }
+    // ------------------------------------------------------------
     // TREND STRENGTH FUNCTION
     // ------------------------------------------------------------
     private static void displayTrendStrength() {
@@ -346,6 +358,7 @@ class SegmentTree {
         return arr[last] + diff; // predicted next price
     }
 }
+
 
 
 
