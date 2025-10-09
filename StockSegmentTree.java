@@ -109,3 +109,66 @@ public class SegmentTreeApp extends Application {
         tree.exponentialMovingAverage(w);
     }
 
+ // ------------------------------------------------------------
+    // SMA–EMA CROSSOVER DETECTION
+    // ------------------------------------------------------------
+    // DISPLAYS BUY OR SELL SIGNAL BASED ON SMA,EMA CROSSOVER
+    private static void detectCrossovers() {
+        int window = 3;
+        double[] sma = tree.getSMA(window);
+        double[] ema = tree.getEMA(window);
+
+        System.out.println("\n📈 SMA–EMA Crossover Points:");
+        for (int i = 1; i < sma.length; i++) {
+            if (sma[i - 1] < ema[i - 1] && sma[i] >= ema[i])
+                System.out.println("  💰 BUY signal at index " + i);
+            else if (sma[i - 1] > ema[i - 1] && sma[i] <= ema[i])
+                System.out.println("  ⚠ SELL signal at index " + i);
+        }
+    }
+
+    // ------------------------------------------------------------
+    // JAVAFX VISUALIZATION WITH FUTURE PREDICTION & TREND STRENGTH
+    // ------------------------------------------------------------
+    @Override
+    public void start(Stage stage) {
+        stage.setTitle("📊 Stock Market Visualization with Prediction & Trend Strength");
+
+        NumberAxis xAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Day"); 
+        yAxis.setLabel("Price"); 
+
+        LineChart<Number, Number> chart = new LineChart<>(xAxis, yAxis);
+        chart.setTitle("Prices + SMA + EMA + Trend Strength + Future Prediction");
+
+        // -----------------------
+        // Price Series
+        // -----------------------
+        XYChart.Series<Number, Number> priceSeries = new XYChart.Series<>();
+        priceSeries.setName("Price");
+        for (int i = 0; i < prices.length; i++)
+            priceSeries.getData().add(new XYChart.Data<>(i, prices[i]));
+
+        // -----------------------
+        // SMA Series
+        // -----------------------
+        int window = 3;
+        XYChart.Series<Number, Number> smaSeries = new XYChart.Series<>();
+        smaSeries.setName("SMA");
+        double[] sma = tree.getSMA(window);
+        for (int i = 0; i < sma.length; i++)
+            smaSeries.getData().add(new XYChart.Data<>(i, sma[i]));
+
+        // -----------------------
+        // EMA Series
+        // -----------------------
+        XYChart.Series<Number, Number> emaSeries = new XYChart.Series<>();
+        emaSeries.setName("EMA");
+        double[] ema = tree.getEMA(window);
+        for (int i = 0; i < ema.length; i++)
+            emaSeries.getData().add(new XYChart.Data<>(i, ema[i]));
+
+
+
+
