@@ -80,12 +80,39 @@ class SegmentTree{
         return min;
     }
 
+ // ------------------------------------------------------------
+    // Function: rangeMax
+    // Purpose: Returns maximum value in range [l, r].
+    // Logic: Linear scan between indices l and r.
+    // Time Complexity: O(n)
+    // Justification: In worst case, traverses all elements in range.
+    // ------------------------------------------------------------
+    public int rangeMax(int l, int r) {
+        int max = Integer.MIN_VALUE;
+        for (int i = l; i <= r; i++)
+            max = Math.max(max, arr[i]);
+        return max;
+    }
+
+    // ------------------------------------------------------------
+    // Function: rangeDifference
+    // Purpose: Calculates price volatility (max - min) within [l, r].
+    // Logic: Uses rangeMin() and rangeMax().
+    // Time Complexity: O(n)
+    // Justification: Depends on two O(n) traversals.
+    // ------------------------------------------------------------
+    public int rangeDifference(int l, int r) {
+        return rangeMax(l, r) - rangeMin(l, r);
+    }
+
+
 
   
 
 
   
 }
+
 
 
 
